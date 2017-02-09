@@ -6,7 +6,7 @@
 % excecution scripts in order. 
 
 %%%%%% Cleans Workspace %%%%%%%%%%%%%%%%%%%%%%%%%
-% clear % Deletes all variables.
+clear % Deletes all variables.
 close all % Closes all figures.
 clc % Clears the command window.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
