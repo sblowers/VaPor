@@ -52,7 +52,7 @@ Option_PennesOnly = false;
 
 
 %%%%%% Option for Modelling Temp Difference %%%%%
-Option_TemperatureDifference = true;
+Option_TemperatureDifference = false;
 % This option tells the model to run two trials. The first with the
 % boundary conditions [H_Out and T_Out] defined above, and the second with a new
 % boundary conditions [H_OutNew and T_OutNew] defined below. This generates
