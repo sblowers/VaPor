@@ -65,7 +65,7 @@ SetVoxelSize = 0.0015; % Desired voxel size [m].
 
 
 %%%%%% Option for Coarsening Domain Grid %%%%%%%%
-Option_DomainCoarsening = 'two';
+Option_DomainCoarsening = 'three';
 % The factor for which the grid domain is coarsened in the default
 % adjustment option. options include ['none','two','three','six'] as the
 % size of the files are divisible by six. The option 'none' is not
