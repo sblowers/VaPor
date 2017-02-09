@@ -31,10 +31,16 @@ for Pnt=2:size(Vessel,1)
     
     if Vessel(Pnt,6) >= Limit
         % location of current point
-        PntX=Vessel(Pnt,3); PntY=Vessel(Pnt,4); PntZ=Vessel(Pnt,5);
+        PntX=Vessel(Pnt,3); PntY=Vessel(Pnt,4); PntZ=Vessel(Pnt,5); PntD = Vessel(Pnt,6);
         % find parent location
         PntConn=Vessel(Pnt,7);
         PntConnX=Vessel(PntConn,3); PntConnY=Vessel(PntConn,4); PntConnZ=Vessel(PntConn,5);
+        
+        if PntConn == 1
+            PntConnD = PntD;
+        else
+            PntConnD = Vessel(PntConn,6);
+        end
         
         if isempty(Data)
             PntV = 1;
@@ -47,7 +53,7 @@ for Pnt=2:size(Vessel,1)
             PntConnV = abs(Data(Pnt,1));
         end
         
-        [X,Y,Z] = createCylinder([PntConnY,PntConnX,PntConnZ],[PntY,PntX,PntZ],Vessel(PntConn,6)/VoxelSize,Vessel(Pnt,6)/VoxelSize);
+        [X,Y,Z] = createCylinder([PntConnY,PntConnX,PntConnZ],[PntY,PntX,PntZ],PntConnD/VoxelSize,PntD/VoxelSize);
         
         if abs(PntConnV-PntV) <= 1e-5
             V = ones(1,10)*PntConnV;
