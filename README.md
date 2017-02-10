@@ -5,6 +5,8 @@ The Vascular Porous (VaPor) model is an open source software designed to simulat
 
 Note: this software requires the Imaging Processing Toolbox in Matlab to work.
 
+Note: The linear solver in this program can use a considerable amount of RAM to solve. It is not recommended to use the DomainCoarsening = 'none' option with the example data, nor generate more than 200,000 vessels. Additionally, the program cannot be aborted using Ctrl+c whilst the linear solver is in progress and the only way to exit during the run is to kill Matlab itself. 
+
 A brief overview of the the initialisation functions is given in the .pdf ProgramDocumentation. 
 
 
