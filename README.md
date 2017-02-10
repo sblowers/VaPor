@@ -1,6 +1,8 @@
 # VaPor
 Vascular Porous Model for Simulating Biological Temperatures
 
+![vaporimage1](https://cloud.githubusercontent.com/assets/25664298/22834082/eba3f48e-efab-11e6-8cfc-6f906a6092a4.png) 
+
 The Vascular Porous (VaPor) model is an open source software designed to simulate biological mass flows and heat transfer. Blood vessels are modelled as 1D line segments embedded within a 3D domain representing tissue. All mass and energy balances between these domains are conserved. The current version is set up to focus on cerebral temperatures. It includes domain reading, vessel generation, as well as flow and temperature solvers. Additionally, some display features are included to help read the results.
 
 Note: this software requires the Imaging Processing Toolbox in Matlab to work.
