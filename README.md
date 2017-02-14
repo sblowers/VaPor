@@ -1,5 +1,6 @@
 # VaPor
 Vascular Porous Model for Simulating Biological Temperatures
+Authors: Stephen Blowers, Ian Marshall, Michael Thrippleton, Bridget Harris, Peter Andrews, Iain Bethune, and Prashant Valluri.
 
 ![vaporimage1](https://cloud.githubusercontent.com/assets/25664298/22834082/eba3f48e-efab-11e6-8cfc-6f906a6092a4.png)
 ![vaporimage2](https://cloud.githubusercontent.com/assets/25664298/22835187/cc857236-efaf-11e6-8a37-0c2dfe847d4b.png)
@@ -17,7 +18,7 @@ Data for the example arterial vessel tree provided in Vessels\BG001.swc is taken
 
 Data for the example venous vessel tree has been extracted from a MRI scan provided by the Brain Research Imaging Centre, Edinburgh Imaging, University of Edinburgh.
 
-The example image sequences used are taken from the tissue probability maps provided by SPM12 software located at http://www.fil.ion.ucl.ac.uk/spm/
+The example image sequences used are taken from the tissue probability maps provided by SPM12 software located at http://www.fil.ion.ucl.ac.uk/spm/. To incorporate these files into the solver, they first must be extracted from the repository within the SPM12 files found on the above website. The raw image files are stored in spm12/tpm/TPM.nii and must be extracted through an appropriate image processeing software (e.g. ImageJ found free at https://imagej.nih.gov/ij/download.html). The corresponding directories for the image files should then be specified within "domainReadingInitialisation".
 
 These are supplied for the purposes of exhibiting the application of the software to cerebral temperatures. They do not represent work developed by the authors of this software. Alternative data inputs can be used within the model. 
 
