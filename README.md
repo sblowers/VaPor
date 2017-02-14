@@ -1,5 +1,6 @@
 # VaPor
 Vascular Porous Model for Simulating Biological Temperatures
+
 Authors: Stephen Blowers, Ian Marshall, Michael Thrippleton, Bridget Harris, Peter Andrews, Iain Bethune, and Prashant Valluri.
 
 ![vaporimage1](https://cloud.githubusercontent.com/assets/25664298/22834082/eba3f48e-efab-11e6-8cfc-6f906a6092a4.png)
