@@ -63,13 +63,22 @@ for N=1:NoPts;
             MatrixRows(RowCount,:) = [2*N-1,2*N,-G2]; RowCount=RowCount+1;
             % Does interaction with current node and central point
             
-            MatrixRows(RowCount,:) = [2*Conn,2*Conn,G1]; RowCount=RowCount+1;
-            MatrixRows(RowCount,:) = [2*Conn,2*N-1,-G1]; RowCount=RowCount+1;
-            MatrixRows(RowCount,:) = [2*N-1,2*N-1,G1]; RowCount=RowCount+1;
-            MatrixRows(RowCount,:) = [2*N-1,2*Conn,-G1]; RowCount=RowCount+1;
-            % Does interaction with connecting node and central point
+            if Conn~=1 || BranchTermination(1) == 0 % If connects to point 1 and point 1 is not a branch termination.
+                MatrixRows(RowCount,:) = [2*Conn,2*Conn,G1]; RowCount=RowCount+1;
+                MatrixRows(RowCount,:) = [2*Conn,2*N-1,-G1]; RowCount=RowCount+1;
+                MatrixRows(RowCount,:) = [2*N-1,2*N-1,G1]; RowCount=RowCount+1;
+                MatrixRows(RowCount,:) = [2*N-1,2*Conn,-G1]; RowCount=RowCount+1;
+                % Does interaction with connecting node and central point
+            else % If connects to point 1 and point 1 is a branch termination.
+                MatrixRows(RowCount,:) = [2*Conn,2*Conn,1]; RowCount=RowCount+1;
+                MatrixRows(RowCount,:) = [2*Conn,2*N-1,-1]; RowCount=RowCount+1;
+                MatrixRows(RowCount,:) = [2*N-1,2*N-1,1]; RowCount=RowCount+1;
+                MatrixRows(RowCount,:) = [2*N-1,2*Conn,-1]; RowCount=RowCount+1;
+                % Sets central node equal to point 1.There should be no 
+                % flow at branch termination.
+            end
             
-            D(2*N-1) = -S(N); % Source term for central point
+            D(2*N-1) = D(2*N-1) -S(N); % Source term for central point
             D(2*N) = 0; % Nodes have no domain transfer.
             
         else % If current node is a branch termination
@@ -87,7 +96,7 @@ for N=1:NoPts;
             MatrixRows(RowCount,:) = [2*N-1,2*Conn,-G1]; RowCount=RowCount+1; 
             % Does interaction with connecting node and central point
             
-            D(2*N-1) = -S(N); % Source term for central point
+            D(2*N-1) = D(2*N-1) -S(N); % Source term for central point
             D(2*N) = 0; % Nodes have no domain transfer.
         end
         
@@ -97,20 +106,21 @@ for N=1:NoPts;
         MatrixRows(RowCount,:) = [2*N,2*N,1]; RowCount=RowCount+1;
         MatrixRows(RowCount,:) = [2*N,2*N-1,-1]; RowCount=RowCount+1;
         % Set node one equal to the theoretical central point on the
-        % segment. 
+        % segment.
         
+        D(2*N) = 0; % Nodes have no domain transfer.
     end
     
     if ~isempty(InletPoints)
         if ismember(N,InletPoints)
-            D(2*N) = InletFlows(InletPoints==N);
+            D(2*N) = D(2*N)+ InletFlows(InletPoints==N);
         end
     end
     % If there are inlet nodes, set the flowrate at those nodes.
     
     if ~isempty(OutletPoints)
         if ismember(N,OutletPoints)
-            D(2*N) = OutletFlows(OutletPoints==N);
+            D(2*N) = D(2*N) + OutletFlows(OutletPoints==N);
         end
     end
     % If there are outlet nodes, set the flowrate at those nodes.
