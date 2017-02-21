@@ -82,7 +82,7 @@ TargetPerfusion = 30;
 
 %%%%%% Porosity %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Porosity_GreyMatter = 0.0672; % Grey Matter porosity [].
-Porosity_WhiteMatter = 0.405; % White Matter porosity [].
+Porosity_WhiteMatter = 0.0405; % White Matter porosity [].
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
