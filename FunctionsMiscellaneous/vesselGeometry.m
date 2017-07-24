@@ -24,11 +24,7 @@ for n=2:size(Vessel,1)
     L(n) = h*norm(curr-prev); % Length of Vessel Segment
     AL(n) = sqrt(((D(n) - Vessel(Vessel(n,7),6))/2)^2+L(n)^2)*pi*(D(n) + Vessel(Vessel(n,7),6))/2;
     Davg(n)=(D(n)+Vessel(Vessel(n,7),6))/2;
-    if D(n) == Vessel(Vessel(n,7),6)
-        Aavg(n) = pi/4 * D(n)^2;
-    else
-        Aavg(n) = (1/12)*pi*(D(n)^3-Vessel(Vessel(n,7),6)^3)*1/(D(n)-Vessel(Vessel(n,7),6));
-    end
+    Aavg(n) = (1/12)*pi*(D(n)^2 + Vessel(Vessel(n,7),6)^2 + D(n)*Vessel(Vessel(n,7),6));
     Vol(n) = L(n)*Aavg(n);
 end
 
