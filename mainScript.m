@@ -1,9 +1,10 @@
 % Main Excecution file for the VaPor model.
 % Script File: mainScript.m
 % Author: Stephen Blowers  -  S.Blowers@ed.ac.uk
-% Date Modified: 08/02/2017
-% Description: Establishes pathways and excecutes initialisation and 
-% excecution scripts in order. 
+% Date Modified: 20/09/2017
+% Description: Establishes pathways and excecutes initialisation and
+% excecution scripts in order.
+
 
 %%%%%% Cleans Workspace %%%%%%%%%%%%%%%%%%%%%%%%%
 clear % Deletes all variables.
@@ -43,7 +44,10 @@ overrideInitialisation
 domainReading
 % Creates 3D domain.
 
-if ~Option_PennesOnly % Skip flowrate simulations if only solving Pennes Equation.
+if ~Option_PennesOnly || (Option_PennesOnly && Option_Stroke)
+    % Skip flowrate simulations if only solving Pennes Equation (except
+    % when modelling a stroke using Pennes Equation).
+    
     vesselReading
     % Creates 1D vessels.
     
@@ -56,34 +60,74 @@ if ~Option_PennesOnly % Skip flowrate simulations if only solving Pennes Equatio
     
     flowrateSolving3D
     % Solves flowrates in 3D porous domain.
-end
-
-temperatureSolver
-% Solves temperatures across all domains.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%% Finding Temperature Difference Option %%%%
-if Option_TemperatureDifference 
     
-    if Option_PennesOnly
-        Tt_Save = Tt;
-    else
-        Tt_Save = Tt;
-        Tb_Save = Tb;
-        T_Art_Save = T_Art;
-        T_Vein_Save = T_Vein;
+    if Option_CounterCurrentFlow
+        flowrateSolving3D_CounterCurrent
+        % Solves flowrates in 3D porous domain an additional for
+        % calculating counter current-flow.
     end
     
-    H_Out = H_OutNew;
-    T_Out = T_OutNew;
-    % Set new boundary conditions for second trial.
+    if Option_PseudoCounterCurrentFlow
+        U = Option_PseudoAmount*U; U2 = -(Option_PseudoAmount-1)*U; 
+        V = Option_PseudoAmount*V; V2 = -(Option_PseudoAmount-1)*V; 
+        W = Option_PseudoAmount*W; W2 = -(Option_PseudoAmount-1)*W; 
+        % Adjusts the velocities for the use of pseudo counter current
+        % flow.
+    end
+end
+
+if Option_Stroke
+    StrokePerfOriginal = MeasuredPerfusion; 
+    % Old perfusion values measured from velocoties.
+    strokeAdjustment
+    % Adjusts velocities based on stroke 
+    StrokePerfNew = MeasuredPerfusion;
+    % New perfusion values measured from velocoties.
     
-    temperatureSolver
+    if Option_PennesOnly
+        Perfusion(GM_WM) = Perfusion(GM_WM).*(StrokePerfNew(GM_WM)./StrokePerfOriginal(GM_WM));
+        PerfusionAlt(GM_WM) = PerfusionAlt(GM_WM).*(StrokePerfNew(GM_WM)./StrokePerfOriginal(GM_WM));
+        % Adjusts perfusion values for use in Pennes Bioheat Equation.
+    end
+end
+
+if Option_ParticleTracer
+    if Option_CounterCurrentFlow
+        particleTracerMethod_CounterCurrent
+    else
+        particleTracerMethod
+    end
+else
+    
+    if Option_TransientSolve
+        temperatureSolver_CN % Transient solver with Crank-Nicholson timestepping.
+    else
+        temperatureSolver % Steady-state temperature solver.
+    end
     % Solves temperatures across all domains.
     
-    Tt_Diff = Tt - Tt_Save;
-    % Establish difference between two results.
+    if Option_TemperatureDifference
+        
+        if Option_PennesOnly
+            Tt_Save = Tt;
+        else
+            Tt_Save = Tt;
+            Tb_Save = Tb;
+            T_Art_Save = T_Art;
+            T_Vein_Save = T_Vein;
+        end
+        % Saving values for comparison after difference is calculated.
+        
+        H_Out = H_OutNew;
+        T_Out = T_OutNew;
+        % Set new boundary conditions for second trial.
+        
+        temperatureSolver
+        % Solves temperatures across all domains.
+        
+        Tt_Diff = Tt - Tt_Save;
+        % Establish difference between two results.
+    end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

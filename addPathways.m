@@ -5,4 +5,7 @@ addpath(genpath('Initialisation'))
 addpath(genpath('FunctionsExecution'))
 addpath(genpath('FunctionsMiscellaneous'))
 addpath(genpath('FunctionsDisplay'))
+addpath(genpath('FunctionsExecutionExtra'))
+addpath(genpath('FunctionsMiscellaneousExtra'))
+addpath(genpath('FunctionsDisplayExtra'))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

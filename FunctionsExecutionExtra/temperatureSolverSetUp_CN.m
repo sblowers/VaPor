@@ -88,7 +88,11 @@ for I=1:size(DomTot,1)
                     Porosity_t = 1-Porosity_b;
                 end
                 
-                Rho_t = Rho(I,J,K);
+                if strcmp(TrialOverride,'tracer')
+                    Rho_t = 1;
+                else
+                    Rho_t = Rho(I,J,K);
+                end
                 Cp_t = Cp(I,J,K);
                 Kc_t = Kc(I,J,K);
                 Q_t = Q(I,J,K);
@@ -338,8 +342,8 @@ for I=1:size(DomTot,1)
                         % between the tissue phase and the blood phase.
                         
                     else % If only tissue phase is present.
-                        T_DataTemp = [T_DataTemp;BRow,Row,1]; % Blood domain interaction for current voxel (tissue domain).
-                        T_DataTemp = [T_DataTemp;BRow,BRow,-1]; % Blood domain interaction for current voxel (blood domain).
+                        T_DataTemp = [T_DataTemp;BRow,Row,2]; % Blood domain interaction for current voxel (tissue domain).
+                        T_DataTemp = [T_DataTemp;BRow,BRow,-2]; % Blood domain interaction for current voxel (blood domain).
                         % This sets the blood phase equal to the tissue
                         % phase. This avoids any voxels remaining undefined
                         % if the porosity is 0 (eg outside the brain
@@ -351,8 +355,8 @@ for I=1:size(DomTot,1)
                 
                 %%%%%% Transient Heat Transfer %%%%%%%%%%%%%%%%%%
                 if Option_TransientSolve
-                    T_DataTemp = [T_DataTemp;Row,Row,-Vol*Porosity_t*Rho_t*Cp_t/Timestep];
-                    T_DataTemp = [T_DataTemp;BRow,BRow,-Vol*Porosity_b*Rho_b*Cp_b/Timestep];
+                    T_DataTemp = [T_DataTemp;Row,Row,-2*Vol*Porosity_t*Rho_t*Cp_t/Timestep];
+                    T_DataTemp = [T_DataTemp;BRow,BRow,-2*Vol*Porosity_b*Rho_b*Cp_b/Timestep];
                 end
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
@@ -570,7 +574,7 @@ for Node = 1:size(Vessel2Volume1,1)
     %%%%%% Inlet Nodes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if ismember(Node,InletPoints)
         Index = find(Node==InletPoints); % Find which inlet is being referred to.
-        T_DataTemp = [T_DataTemp;NumDomRows+Node,NumDomRows+Node,1]; % Set node equal to InletTemp.
+        T_DataTemp = [T_DataTemp;NumDomRows+Node,NumDomRows+Node,2]; % Set node equal to InletTemp.
         D(NumDomRows+Node) = InletTemp(Index); % Set node equal to InletTemp.
         % If node is an inlet, set temperature to corresponding InletTemp.
         
@@ -632,7 +636,7 @@ for Node = 1:size(Vessel2Volume1,1)
     
     %%%%%% Transient Heat Transfer %%%%%%%%%%%%%%%%%%
     if Option_TransientSolve
-        T_DataTemp = [T_DataTemp;NumDomRows+Node,NumDomRows+Node,-Vol1(Node)*Rho_b*Cp_b/Timestep];
+        T_DataTemp = [T_DataTemp;NumDomRows+Node,NumDomRows+Node,-2*Vol1(Node)*Rho_b*Cp_b/Timestep];
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -731,7 +735,7 @@ for Node = 1:size(Vessel2Volume2,1)
     
     %%%%%% Transient Heat Transfer %%%%%%%%%%%%%%%%%%
     if Option_TransientSolve
-        T_DataTemp = [T_DataTemp;NumDomRows+VesselRow+Node,NumDomRows+VesselRow+Node,-Vol2(Node)*Rho_b*Cp_b/Timestep];
+        T_DataTemp = [T_DataTemp;NumDomRows+VesselRow+Node,NumDomRows+VesselRow+Node,-2*Vol2(Node)*Rho_b*Cp_b/Timestep];
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -754,6 +758,7 @@ toc % Finish timing.
 %%%%%% Creating Sparse Matrix %%%%%%%%%%%%%%%%%%%
 T_Boolean = logical(T_Super(:,1));
 T_Super = T_Super(T_Boolean,:); % Delete any excess rows from T_Super.
+T_Super(:,3) = 0.5*T_Super(:,3);
 T_Solve = sparse(T_Super(:,1),T_Super(:,2),T_Super(:,3)); % Convert P_Super into sparse matrix.
 clearvars T_Super T_Boolean % Delete variables to free up memory.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -82,8 +82,12 @@ for I=1:size(DomTot,1)
                         % transfer to occur.
                     end
                     
-                    if K == 1, BorderMinZ=0; end
+                    if Option_AdiabaticBase && K == 1, BorderMinZ=0; end
                     % Set base of model to adiabatic.
+                    
+                    if Option_AdiabaticArmEnds && K == find(any(any(GM_WM))==1,1,'first'), BorderMinZ=0; end
+                    if Option_AdiabaticArmEnds && K == find(any(any(GM_WM))==1,1,'last'), BorderMaxZ=0; end
+                    % Set ends of arm model to adiabatic.
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     
                     
@@ -187,7 +191,14 @@ for I=1:size(DomTot,1)
                 T_DataTemp = [T_DataTemp;Row,Row,-Vol*Perfusion(I,J,K)*Cp_b]; % Tissue domain interaction for current voxel.
                 % Establishes the Pennes Perfusion source term for tissue.
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+                
+                
+                %%%%%% Transient Heat Transfer %%%%%%%%%%%%%%%%%%
+                if Option_TransientSolve
+                    T_DataTemp = [T_DataTemp;Row,Row,-Vol*Rho_t*Cp_t/Timestep];
+                end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
                 
                 T_Super(T_DataRowcount:T_DataRowcount-1+size(T_DataTemp,1),:) = T_DataTemp; % Add T_DataTemp to T_Super.
                 T_DataRowcount = T_DataRowcount + size(T_DataTemp,1); % Update T_DataRowcount.

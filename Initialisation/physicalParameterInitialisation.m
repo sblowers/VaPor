@@ -1,7 +1,7 @@
 % Input Physical Parameters for the simulation.
 % Script File: physicalParameterInitialisation.m
 % Author: Stephen Blowers  -  S.Blowers@ed.ac.uk
-% Date Modified: 08/02/2017
+% Date Modified: 20/09/2017
 % Description: Input for all the physical parameters used within the model.
 
 %%%%%% Density %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9,7 +9,7 @@ Rho_b = 1050; % Blood density [kg/m3].
 
 Rho_GreyMatter = 1030; % Grey Matter density [kg/m3].
 Rho_WhiteMatter = 1030; % White Matter density [kg/m3].
-Rho_CSFandEyes = 1000; % CSF and Eyes density [kg/m3].
+Rho_CSFandEyes = 1000; % CSF and Eyes  density [kg/m3].
 Rho_Skull = 1520; % Skull (bone) density [kg/m3].
 Rho_SoftTissue = 1000; % Soft Tissue density [kg/m3].
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,14 +68,14 @@ Perfusion_SoftTissue = 2.0; % Soft Tissue predicted perfusion (2.0ml/100g/min = 
 Option_TargetPerfusion = false;
 % If this option is selected (true), the perfusion values within the brain
 % domain (not in surface tissue) will be adjusted to fit the target
-% parameter. This option is also affected by 
-% Option_TargetPerfusionConvert. If Option_TargetPerfusionConvert is true 
-% then units for Target Perfusion must be given in [ml/100g/min] otherwise 
+% parameter. This option is also affected by
+% Option_TargetPerfusionConvert. If Option_TargetPerfusionConvert is true
+% then units for Target Perfusion must be given in [ml/100g/min] otherwise
 % they should be given in [kg/m3/s].
 
-Option_TargetPerfusionConvert = true;
+Option_TargetPerfusionConvert = false;
 TargetPerfusion = 30;
-% Units are [ml/100g/min] if Option_TargetPerfusionConvert = true. 
+% Units are [ml/100g/min] if Option_TargetPerfusionConvert = true.
 % Units are [kg/m3/s] if Option_TargetPerfusionConvert = false.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -93,7 +93,7 @@ Visc_b = 0.0035; % Blood viscosity [Pa s].
 
 %%%%%% Capillary Information %%%%%%%%%%%%%%%%%%%%
 D_Cap = 10e-6; % Capillary diameter [m].
-Tortuosity = 2.5; % Capillary tortuosity [].
+Tortuosity = 25; % Capillary tortuosity [].
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

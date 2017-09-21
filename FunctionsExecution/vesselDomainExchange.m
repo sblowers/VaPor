@@ -1,4 +1,4 @@
-function [MdotVessel,Vessel2Volume,Volume2Vessel,MdotVoxels] = vesselDomainExchange(Vessel,L,DomainFull,DomainSource,BloodFlow)
+function [MdotVessel,Vessel2Volume,Volume2Vessel,MdotVoxels] = vesselDomainExchange(Vessel,L,DomainFull,DomainSource,BloodFlow,BranchTerminationOption)
 
 
 %%%%%% Create Inter-Domain Cells %%%%%%%%%%%%%%%%
@@ -28,7 +28,12 @@ for iv = 2:size(Vessel,1)
     if ~isempty(Intersections)
         IntersectionsBool = true(size(Intersections,1),1);
         for iw = 1:size(Intersections,1)
-            if ~DomainFull(Intersections(iw,1),Intersections(iw,2),Intersections(iw,3))
+            I = Intersections(iw,1); J = Intersections(iw,2); K = Intersections(iw,3);
+            if I>=1 && I<=size(DomainFull,1) && J>=1 && J<=size(DomainFull,2) && K>=1 && K<=size(DomainFull,3)
+                if ~DomainFull(Intersections(iw,1),Intersections(iw,2),Intersections(iw,3))
+                    IntersectionsBool(iw) = false;
+                end
+            else
                 IntersectionsBool(iw) = false;
             end
         end
@@ -58,19 +63,36 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+%%%%%% Branch Termination List %%%%%%%%%%%%%%%%%%
+BranchTerminationList = ones(size(Vessel,1),1);
+if BranchTerminationOption
+    for n=2:numel(BranchTerminationList)
+        BranchTerminationList(Vessel(n,7)) = 0;
+    end
+end
+% Checks whether branches have connections. If they do then they are
+% not considered terminations. Only branches with terminations are allowed
+% mass transfer. If the Option_BranchTerminationsOnly = [false] then all 
+% segments are considered 'branch terminations' for the purposes of the
+% solver.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 %%%%%% Voxel Inter-Domain Transfer %%%%%%%%%%%%%%
 MdotVoxels = zeros(size(DomainFull));
 % Preallocate array for inter-domain mass transfer in voxels.
 
 for iv = 2:size(Vessel,1) % For every line segment.
-    if ~isempty(Vessel2Volume{iv}) % If there is an intersection.
-        for  iw=1:size(Vessel2Volume{iv},1)
-            i = Vessel2Volume{iv}(iw,1);
-            j = Vessel2Volume{iv}(iw,2);
-            k = Vessel2Volume{iv}(iw,3); % Get location of intersection voxel.
-            if DomainSource(i,j,k) % If intersection voxel is in domain that allows inter-domain transfer.
-                Vessel2Volume{iv}(iw,4) = MdotVessel(iv)/numel(Vessel2Volume{iv}(iw,:)); % Update Vessel2Volume to include this specific transfer.
-                MdotVoxels(i,j,k) = MdotVoxels(i,j,k) + MdotVessel(iv)/numel(Vessel2Volume{iv}(iw,:)); % Update total transfer to voxel.
+    if BranchTerminationList(iv) ~= 0
+        if ~isempty(Vessel2Volume{iv}) % If there is an intersection.
+            for  iw=1:size(Vessel2Volume{iv},1)
+                I = Vessel2Volume{iv}(iw,1);
+                J = Vessel2Volume{iv}(iw,2);
+                K = Vessel2Volume{iv}(iw,3); % Get location of intersection voxel.
+                if DomainSource(I,J,K) % If intersection voxel is in domain that allows inter-domain transfer.
+                    Vessel2Volume{iv}(iw,4) = MdotVessel(iv)/numel(Vessel2Volume{iv}(iw,:)); % Update Vessel2Volume to include this specific transfer.
+                    MdotVoxels(I,J,K) = MdotVoxels(I,J,K) + MdotVessel(iv)/numel(Vessel2Volume{iv}(iw,:)); % Update total transfer to voxel.
+                end
             end
         end
     end

@@ -29,9 +29,9 @@ end
 % termination as it has a point connected to it. Therefore all branch
 % terminations remain after a single run through of the tree.
 
-if (isempty(InletPoints)||~ismember(1,InletPoints)) && (isempty(OutletPoints)||~ismember(1,OutletPoints)) && numel(find(Vessel(:,7) == 1),1)==1
-    BranchTermination(1) = 1;
-end
+% if (isempty(InletPoints)||~ismember(1,InletPoints)) && (isempty(OutletPoints)||~ismember(1,OutletPoints)) && numel(find(Vessel(:,7) == 1),1)==1
+%     BranchTermination(1) = 1;
+% end
 % Check if point 1 lies on a branch termination, inlet or outlet as it
 % doesn't have a defined connection. If it is not an inlet, not an outlet
 % and has only one connecting node then it is a branch termination.
@@ -106,7 +106,8 @@ for N=1:NoPts;
         MatrixRows(RowCount,:) = [2*N,2*N,1]; RowCount=RowCount+1;
         MatrixRows(RowCount,:) = [2*N,2*N-1,-1]; RowCount=RowCount+1;
         % Set node one equal to the theoretical central point on the
-        % segment.
+        % segment (although this doesn't exist for node 1, it still needs
+        % to be solved for)
         
         D(2*N) = 0; % Nodes have no domain transfer.
     end

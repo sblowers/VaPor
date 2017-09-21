@@ -53,7 +53,7 @@ for I = 1:size(GM_WM,1)
                 
                 
                 %%%%%% Mass Source Term %%%%%%%%%%%%%%%%%%%%%%%%%
-                D(GM_WM_convert(I,J,K)) = D(GM_WM_convert(I,J,K)) + Mdot(I,J,K);
+                D(GM_WM_convert(I,J,K)) = D(GM_WM_convert(I,J,K)) + MdotB(I,J,K);
                 % Source term from inter-domain mass transfer.
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
@@ -155,9 +155,9 @@ P = P-min(min(min(P)));
 
 
 %%%%%% Deriving Velocities %%%%%%%%%%%%%%%%%%%%%%
-U=zeros(size(GM_WM,1)+1,size(GM_WM,2),size(GM_WM,3));
-V=zeros(size(GM_WM,1),size(GM_WM,2)+1,size(GM_WM,3));
-W=zeros(size(GM_WM,1),size(GM_WM,2),size(GM_WM,3)+1);
+U2=zeros(size(GM_WM,1)+1,size(GM_WM,2),size(GM_WM,3));
+V2=zeros(size(GM_WM,1),size(GM_WM,2)+1,size(GM_WM,3));
+W2=zeros(size(GM_WM,1),size(GM_WM,2),size(GM_WM,3)+1);
 % Initialise velocity matrices.
 
 for I = 1:size(GM_WM,1)
@@ -169,21 +169,21 @@ for I = 1:size(GM_WM,1)
                 if I < size(GM_WM,1) && GM_WM(I+1,J,K)
                     AvgPorosity = 0.5*(Porosity(I,J,K) + Porosity(I+1,J,K)); % Average porosity of two voxels.
                     G = Rho_b*VoxelSize*AvgPorosity*pi*D_Cap^2/(32*Visc_b*Tortuosity); % Calculate conductance.
-                    U(I+1,J,K) = 1/Rho_b*1/VoxelSize^2*G*(P(I,J,K)-P(I+1,J,K)); % Calculate velocity.
+                    U2(I+1,J,K) = 1/Rho_b*1/VoxelSize^2*G*(P(I,J,K)-P(I+1,J,K)); % Calculate velocity.
                 end
                 % create U velocity at voxel boundary I-1.
                 
                 if J < size(GM_WM,2) && GM_WM(I,J+1,K)
                     AvgPorosity = 0.5*(Porosity(I,J,K) + Porosity(I,J+1,K)); % Average porosity of two voxels.
                     G = Rho_b*VoxelSize*AvgPorosity*pi*D_Cap^2/(32*Visc_b*Tortuosity); % Calculate conductance.
-                    V(I,J+1,K) = 1/Rho_b*1/VoxelSize^2*G*(P(I,J,K)-P(I,J+1,K)); % Calculate velocity.
+                    V2(I,J+1,K) = 1/Rho_b*1/VoxelSize^2*G*(P(I,J,K)-P(I,J+1,K)); % Calculate velocity.
                 end
                 % create V velocity at voxel boundary J-1.
                 
                 if K < size(GM_WM,3) && GM_WM(I,J,K+1)
                     AvgPorosity = 0.5*(Porosity(I,J,K) + Porosity(I,J,K+1)); % Average porosity of two voxels.
                     G = Rho_b*VoxelSize*AvgPorosity*pi*D_Cap^2/(32*Visc_b*Tortuosity); % Calculate conductance.
-                    W(I,J,K+1) = 1/Rho_b*1/VoxelSize^2*G*(P(I,J,K)-P(I,J,K+1)); % Calculate velocity.
+                    W2(I,J,K+1) = 1/Rho_b*1/VoxelSize^2*G*(P(I,J,K)-P(I,J,K+1)); % Calculate velocity.
                 end
                 % create W velocity at voxel boundary K-1.
                 
@@ -198,29 +198,27 @@ end
 
 
 %%%%%% Calculate Derived Perfusion %%%%%%%%%%%%%%
-if ~Option_CounterCurrentFlow 
-    measurePerfusion
-end
+measurePerfusion
 % This calculates perfusion values from flows into every voxel. Allows
 % comparison with predicted Perfusion values inputted into the model.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%% Creating Colocated Velocities %%%%%%%%%%%%
-UU = 0.5*(U(1:size(GM_WM,1),1:size(GM_WM,2),1:size(GM_WM,3))+U(2:size(GM_WM,1)+1,1:size(GM_WM,2),1:size(GM_WM,3)));
-VV = 0.5*(V(1:size(GM_WM,1),1:size(GM_WM,2),1:size(GM_WM,3))+V(1:size(GM_WM,1),2:size(GM_WM,2)+1,1:size(GM_WM,3)));
-WW = 0.5*(W(1:size(GM_WM,1),1:size(GM_WM,2),1:size(GM_WM,3))+W(1:size(GM_WM,1),1:size(GM_WM,2),2:size(GM_WM,3)+1));
-Velocity = sqrt(UU.^2 + VV.^2 + WW.^2);
+UU2 = 0.5*(U2(1:size(GM_WM,1),1:size(GM_WM,2),1:size(GM_WM,3))+U2(2:size(GM_WM,1)+1,1:size(GM_WM,2),1:size(GM_WM,3)));
+VV2 = 0.5*(V2(1:size(GM_WM,1),1:size(GM_WM,2),1:size(GM_WM,3))+V2(1:size(GM_WM,1),2:size(GM_WM,2)+1,1:size(GM_WM,3)));
+WW2 = 0.5*(W2(1:size(GM_WM,1),1:size(GM_WM,2),1:size(GM_WM,3))+W2(1:size(GM_WM,1),1:size(GM_WM,2),2:size(GM_WM,3)+1));
+Velocity2 = sqrt(UU2.^2 + VV2.^2 + WW2.^2);
 % The velocities used in the solver are stored at voxel boundaries which
 % are difficult to visualise alongside data stored at voxel centres.
 % Therefore combining the average values of two faces gives an
 % approximation for values at the centre. These are only used for display
 % purposes.
 
-UU(~GM_WM) = NaN;
-VV(~GM_WM) = NaN;
-WW(~GM_WM) = NaN;
-Velocity(~GM_WM) = NaN;
+UU2(~GM_WM) = NaN;
+VV2(~GM_WM) = NaN;
+WW2(~GM_WM) = NaN;
+Velocity2(~GM_WM) = NaN;
 % Setting all values outside of the domain to NaN. This facilitates
 % visualisation of data with 'planecut'.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

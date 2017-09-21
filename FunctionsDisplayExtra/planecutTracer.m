@@ -1,4 +1,4 @@
-function planecut(Dir,Val,Data)
+function planecutTracer(Dir,Val,Data)
 %planecut - Takes a slice of an input Data at specificed location using the inbuilt Matlab 'slice' function. Removes any lines segmenting the data and orientates for better viewing.
 %
 % Syntax:  planecut(Dir,Val,Data)
@@ -45,10 +45,13 @@ H.EdgeColor = 'none';
 H.LineStyle = 'none';
 % Turns off any edges that appear within the slice of data.
 
+alpha(H,'color')
+
 AxisLength = max(size(Data));
 axis([0 AxisLength 0 AxisLength 0 AxisLength])
 % Sets the axis to be square.
 
 colorbar % Shows colourbar.
-colormap jet % Sets the colourmap to be jet if the default is not already.
+colormap([ones(100,1) linspace(1,0,100)' linspace(1,0,100)'])
+caxis([0 1])
 end

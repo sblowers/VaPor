@@ -233,9 +233,6 @@ end
 % SoftTissue = tformarray(SoftTissue,T_Form,Resampler,[1 2 3],[1 2 3], round(size(SoftTissue)*Option_DomainCoarseningFactor),[],0);
 % Mask = tformarray(Mask,T_Form,Resampler,[1 2 3],[1 2 3], round(size(Mask)*Option_DomainCoarseningFactor),[],0);
 % VoxelSize = VoxelSize/Option_DomainCoarseningFactor;
-% CODE USED FOR COARSENING DOMAIN BY ARBITRARY FACTOR. TO PROPERLY USE,
-% ADDITIONAL CODE NEEDS TO BE ADDED TO vesselReading.m TO ACCOMODATE THE
-% SCALING FACTOR.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -334,7 +331,7 @@ if Option_CubeBrain
     CSFandEyes = zeros(3,3,CubeSize+2);
     Skull = zeros(3,3,CubeSize+2);
     SoftTissue = zeros(3,3,CubeSize+2);
-    % Creates linear domain (different length to CubeBrainArm2). 
+    % Creates linear domain. 
     
     elseif Option_CubeBrainArm
     GreyMatter = zeros(CubeSize+2,CubeSize+2,round(CubeArmRatio*CubeSize)+2);
@@ -354,7 +351,6 @@ if Option_CubeBrain
     CSFandEyes = zeros(3,3,round(CubeArmRatio*CubeSize)+2);
     Skull = zeros(3,3,round(CubeArmRatio*CubeSize)+2);
     SoftTissue = zeros(3,3,round(CubeArmRatio*CubeSize)+2);
-    % Creates linear domain (different length to CubeBrainLinear).
     
     else
     GreyMatter = zeros(CubeSize+2,CubeSize+2,CubeSize+2);
@@ -364,15 +360,13 @@ if Option_CubeBrain
     CSFandEyes = zeros(CubeSize+2,CubeSize+2,CubeSize+2);
     Skull = zeros(CubeSize+2,CubeSize+2,CubeSize+2);
     SoftTissue = zeros(CubeSize+2,CubeSize+2,CubeSize+2);
-    % Creates cubic shape domain. 
 
     end
     
     VoxelSize = CubeVoxelSize; % Set voxel size.
     GM_WM = logical(GreyMatter + WhiteMatter); % Create identifier for brain domain.
 end
-% This section replaces the domain with the cubic domain spacified by the
-% cubic brain options. All domain information is overwritten.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
