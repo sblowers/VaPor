@@ -81,79 +81,7 @@ else
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-if Option_TransientSolve
-%     T_NOld = TransientInitialTemp*ones(size(D));
-    load('C:\Users\s0811548\Desktop\Open Source Code Test\Previous Results\200000Vessels.mat','Tt_Save','T_Art_Save','T_Vein_Save')
-%     load('C:\Users\s0811548\Desktop\Open Source Code Test\Previous Results\TransientTemperatureTrialTest.mat','Tt','T_Art','T_Vein')
-    T_NOld = [Tt_Save(DomTot);T_Art_Save;T_Vein_Save];
-    
-    if ~Option_PennesOnly
-        T_NOld_Time(NumDomRows + InletPoints) = InletTemp;
-    end
-    NoTimesteps = ceil(TotalTime/Timestep);
-    TotalTime = NoTimesteps*Timestep;
-    
-    T_TransientStore = zeros(size(D,1),round(NoTimesteps*Timestep/SaveTime)+1);
-    T_TransientStore(:,1) = T_NOld;
-    
-    T_TransientAdjust = zeros(size(D));
-    
-    if Option_PennesOnly
-        T_TransientAdjust(1:NumDomTot) = Vol*Rho(RowConvert).*Cp(RowConvert)/Timestep;
-    else 
-        
-        T_TransientAdjust(1:NumDomTot) = Vol*(1-Porosity(RowConvert)).*Rho(RowConvert).*Cp(RowConvert)/Timestep;
-        
-        if Beta23 == Inf
-            T_TransientAdjust(1:NumDomTot) = T_TransientAdjust(1:NumDomTot) +...
-                Vol*Porosity(RowConvert)*Rho_b*Cp_b/Timestep;
-        else
-            T_TransientAdjust(NumDomTot+1:NumDomRows) = Vol*Porosity(RowConvert)*Rho_b.*Cp_b/Timestep;
-        end
-        
-        T_TransientAdjust(NumDomRows+1:NumDomRows+VesselRow) = Vol1*Rho_b*Cp_b/Timestep;
-        T_TransientAdjust(NumDomRows+VesselRow+1:end) = Vol2*Rho_b*Cp_b/Timestep;
-        
-        T_TransientAdjust(NumDomRows + InletPoints) = 0;
-    end
-    
-    if Option_VaryingInlet, VaryingInletCheck = true; end    
-    
-    for TimeNo = 1:NoTimesteps
-        disp(['Timestep: ' num2str(TimeNo) '/' num2str(NoTimesteps)]) 
-        D = D - T_TransientAdjust.*T_NOld;
-        
-        disp(['Solving Matrix Inversion size: ' num2str(size(T_Solve,1)) ' by ' num2str(size(T_Solve,2))]) % Display.
-        tic % Start timing.
-        
-        T_N = T_Solve\D; % Solve the linear system.
-        
-        toc % Finish timing.
-        disp('Matrix Inversion Completed') % Display.
-        
-        D = D + T_TransientAdjust.*T_NOld;
-        T_NOld = T_N;
-        
-        if rem(TimeNo*Timestep,SaveTime) == 0
-            T_TransientStore(:,round(TimeNo*Timestep/SaveTime+1)) = T_N;
-        end
-        
-        if Option_VaryingInlet && VaryingInletCheck && (TimeNo*Timestep > TimeChange)
-            disp('Changing Inlet Conditions')
-            BloodTemp = BloodTempNew;
-            InletTemp = InletTempNew;
-            if Option_PennesOnly
-                temperatureSolverSetUp_PennesOnly
-            else
-                temperatureSolverSetUp
-            end
-            VaryingInletCheck = false;
-        end
-        
-    end
-    
-else    
+   
 %%%%%% Solving Linear System %%%%%%%%%%%%%%%%%%%%
 disp('Starting Linear Solver') % Display.
 disp(['Solving Matrix Inversion size: ' num2str(size(T_Solve,1)) ' by ' num2str(size(T_Solve,2))]) % Display.
@@ -164,7 +92,6 @@ T_N = T_Solve\D; % Solve the linear system.
 toc % Finish timing.
 disp('Matrix Inversion Completed') % Display.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-end
 
 
 %%%%%% Reshaping Resutls from Solver %%%%%%%%%%%%
