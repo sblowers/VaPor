@@ -115,7 +115,7 @@ InletTempNew = [0 0 0]; % Corresponding new temperatures at inlets [degC].
 
 
 %%%%%% Option for Particle Tracer Simulation %%%%
-Option_ParticleTracer = true;
+Option_ParticleTracer = false;
 ParticlesGenerated = 10000;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
