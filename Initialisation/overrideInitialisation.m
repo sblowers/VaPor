@@ -133,12 +133,12 @@ elseif strcmp(TrialOverride, 'arm')
     
     InletTemp = 37;
     
-    Option_GraetzNumber = false;
+    Option_GraetzNumber = true;
     
     Q_GreyMatter = 320; % Grey Matter metabolic rate [W/m3].
     Q_WhiteMatter = 320; % White Matter metabolic rate [W/m3].
     
-    T_Out = 36.5;
+    T_Out = 33.5;
     T_OutNew = 10;
     
 elseif strcmp(TrialOverride, 'arm2')
