@@ -1,7 +1,7 @@
 % Main Excecution file for the VaPor model.
 % Script File: mainScript.m
 % Author: Stephen Blowers  -  S.Blowers@ed.ac.uk
-% Date Modified: 20/09/2017
+% Date Modified: 07/11/2018
 % Description: Establishes pathways and excecutes initialisation and
 % excecution scripts in order.
 
@@ -68,19 +68,19 @@ if ~Option_PennesOnly || (Option_PennesOnly && Option_Stroke)
     end
     
     if Option_PseudoCounterCurrentFlow
-        U = Option_PseudoAmount*U; U2 = -(Option_PseudoAmount-1)*U; 
-        V = Option_PseudoAmount*V; V2 = -(Option_PseudoAmount-1)*V; 
-        W = Option_PseudoAmount*W; W2 = -(Option_PseudoAmount-1)*W; 
+        U2 = -(Option_PseudoAmount-1)*U; U = Option_PseudoAmount*U; 
+        V2 = -(Option_PseudoAmount-1)*V; V = Option_PseudoAmount*V; 
+        W2 = -(Option_PseudoAmount-1)*W; W = Option_PseudoAmount*W; 
         % Adjusts the velocities for the use of pseudo counter current
         % flow.
     end
 end
 
 if Option_Stroke
-    StrokePerfOriginal = MeasuredPerfusion; 
+    StrokePerfOriginal = MeasuredPerfusion;
     % Old perfusion values measured from velocoties.
     strokeAdjustment
-    % Adjusts velocities based on stroke 
+    % Adjusts velocities based on stroke
     StrokePerfNew = MeasuredPerfusion;
     % New perfusion values measured from velocoties.
     
@@ -103,30 +103,30 @@ else
         temperatureSolver_CN % Transient solver with Crank-Nicholson timestepping.
     else
         temperatureSolver % Steady-state temperature solver.
-    end
-    % Solves temperatures across all domains.
-    
-    if Option_TemperatureDifference
-        
-        if Option_PennesOnly
-            Tt_Save = Tt;
-        else
-            Tt_Save = Tt;
-            Tb_Save = Tb;
-            T_Art_Save = T_Art;
-            T_Vein_Save = T_Vein;
-        end
-        % Saving values for comparison after difference is calculated.
-        
-        H_Out = H_OutNew;
-        T_Out = T_OutNew;
-        % Set new boundary conditions for second trial.
-        
-        temperatureSolver
         % Solves temperatures across all domains.
         
-        Tt_Diff = Tt - Tt_Save;
-        % Establish difference between two results.
+        if Option_TemperatureDifference
+            
+            if Option_PennesOnly
+                Tt_Save = Tt;
+            else
+                Tt_Save = Tt;
+                Tb_Save = Tb;
+                T_Art_Save = T_Art;
+                T_Vein_Save = T_Vein;
+            end
+            % Saving values for comparison after difference is calculated.
+            
+            H_Out = H_OutNew;
+            T_Out = T_OutNew;
+            % Set new boundary conditions for second trial.
+            
+            temperatureSolver
+            % Solves temperatures across all domains.
+            
+            Tt_Diff = Tt - Tt_Save;
+            % Establish difference between two results.
+        end
     end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
