@@ -56,14 +56,14 @@ if Option_PressureSolve
         % flows to the current node (node N).
         
         Dart = VesselDiameterAdjust*0.0332*abs(VesselDiameterToFlowAdjust*FdotArt(:,2)).^0.3703; % Diameter Flowrate correlation.
-        Dart(Dart<=1e-6) = 1e-6; % Set minimum diameter as 1micron.
-        % Artery diameters based on flowrates. Any diameter less than 1micron
+        Dart(Dart<=1e-5) = 1e-5; % Set minimum diameter as 10micron.
+        % Artery diameters based on flowrates. Any diameter less than 10micron
         % is then set to 1micron. This avoids any zero volume line segments at
         % branch terminations.
         
         Dvein = VesselDiameterAdjust*0.0332*abs(VesselDiameterToFlowAdjust*FdotVein(:,2)).^0.3703; % Diameter Flowrate correlation.
-        Dvein(Dvein<=1e-6) = 1e-6; % Set minimum diameter as 1micron.
-        % Venous diameters based on flowrates. Any diameter less than 1micron
+        Dvein(Dvein<=1e-5) = 1e-5; % Set minimum diameter as 10micron.
+        % Venous diameters based on flowrates. Any diameter less than 10micron
         % is then set to 1micron. This avoids any zero volume line segments at
         % branch terminations.
         
@@ -111,15 +111,15 @@ else
     % column refers to the fraction of mass transfer that comes from or
     % flows to the current node (node N).
     
-    Dart = 0.0332*abs(VesselDiameterToFlowAdjust*FdotArt(:,2)).^0.3703; % Diameter Flowrate correlation.
-    Dart(Dart<=1e-6) = 1e-6; % Set minimum diameter as 1micron.
-    % Artery diameters based on flowrates. Any diameter less than 1micron
+    Dart = VesselDiameterAdjust*0.0332*abs(VesselDiameterToFlowAdjust*FdotArt(:,2)).^0.3703; % Diameter Flowrate correlation.
+    Dart(Dart<=1e-5) = 1e-5; % Set minimum diameter as 10micron.
+    % Artery diameters based on flowrates. Any diameter less than 10micron
     % is then set to 1micron. This avoids any zero volume line segments at
     % branch terminations.
     
-    Dvein = 0.0332*abs(VesselDiameterToFlowAdjust*FdotVein(:,2)).^0.3703; % Diameter Flowrate correlation.
-    Dvein(Dvein<=1e-6) = 1e-6; % Set minimum diameter as 1micron.
-    % Venous diameters based on flowrates. Any diameter less than 1micron
+    Dvein = VesselDiameterAdjust*0.0332*abs(VesselDiameterToFlowAdjust*FdotVein(:,2)).^0.3703; % Diameter Flowrate correlation.
+    Dvein(Dvein<=1e-5) = 1e-5; % Set minimum diameter as 10micron.
+    % Venous diameters based on flowrates. Any diameter less than 10micron
     % is then set to 1micron. This avoids any zero volume line segments at
     % branch terminations.
     
