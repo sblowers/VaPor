@@ -92,8 +92,8 @@ Visc_b = 0.0035; % Blood viscosity [Pa s].
 
 
 %%%%%% Capillary Information %%%%%%%%%%%%%%%%%%%%
-D_Cap = 10e-6; % Capillary diameter [m].
-Tortuosity = 25; % Capillary tortuosity [].
+D_Cap = 10e-5; % Capillary diameter [m].
+Tortuosity = 1.6; % Capillary tortuosity [].
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
