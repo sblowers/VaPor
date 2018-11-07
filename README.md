@@ -14,6 +14,10 @@ Note: The linear solver in this program can use a considerable amount of RAM to 
 
 A brief overview of the the initialisation functions is given in the .pdf ProgramDocumentation. 
 
+The theory behind the model can be found within the thesis MODELLING BRAIN TEMPERATURES IN HEALTHY PATIENTS
+AND THOSE WITH INDUCED HYPOTHERMIA - by S.Blowers found at https://www.era.lib.ed.ac.uk/bitstream/handle/1842/31248/Blowers2018_redacted.pdf.
+
+Additionally, data produced from this model can be found within the publication "How does blood regulate cerebral temperatures during hypothermia?" (2018), available open source at https://www.nature.com/articles/s41598-018-26063-7.
 
 Data for the example arterial vessel tree provided in Vessels\BG001.swc is taken from the Brain Vascular (BraVa) database located at http://cng.gmu.edu/brava [1]. The specific reconstruction is BG001. 
 
